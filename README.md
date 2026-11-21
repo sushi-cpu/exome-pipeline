@@ -47,23 +47,44 @@ bash tests/smoke_test.sh
 
 ### 3. Execute Pipeline
 
-Dry-run:
+#### Option A: Using Docker (Recommended for Production)
+
+**Step 1: Build the Docker Image**
 ```bash
-./run_exome.sh --samplesheet samplesheets/test.csv --dry-run
+docker build --tag wes-pipeline:0.1.0 .
 ```
 
-With local Conda environment:
+*(Optional) Export and load for offline deployment:*
 ```bash
+# Export compressed image
+docker save wes-pipeline:0.1.0 | gzip > wes-pipeline_0.1.0.tar.gz
+
+# Load image on target system
+gunzip -c wes-pipeline_0.1.0.tar.gz | docker load
+```
+
+**Step 2: Configure Host Mounts and Run**
+```bash
+# Create local host configuration
+cp exome_docker.config.example exome_docker.config
+
+# Edit host paths (HOST_DATA_DIR, HOST_REFERENCE_DIR, etc.) in exome_docker.config
+# Then execute through the host wrapper
+./exome_docker.sh --samplesheet samplesheets/test.csv
+```
+
+#### Option B: Using Local Conda / Micromamba
+
+```bash
+# Create and activate environment
 conda env create -f environment.yml
 conda activate exome
-./run_exome.sh --samplesheet samplesheets/test.csv
-```
 
-Using Docker:
-```bash
-cp exome_docker.config.example exome_docker.config
-# edit host mount paths in exome_docker.config
-./exome_docker.sh --samplesheet samplesheets/test.csv
+# Dry-run validation
+./run_exome.sh --samplesheet samplesheets/test.csv --dry-run
+
+# Run full pipeline
+./run_exome.sh --samplesheet samplesheets/test.csv
 ```
 
 ## Output Layout Options
