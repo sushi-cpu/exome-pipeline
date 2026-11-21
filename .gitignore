@@ -1,0 +1,52 @@
+# Core version control configuration
+# Ignore heavy sequencing data, results, local configurations, and reference files
+
+# Data directories and sequencing reads
+data/
+test_data/
+*.fastq
+*.fastq.gz
+*.fq
+*.fq.gz
+
+# Pipeline outputs and run logs
+results/
+logs/
+
+# Machine-specific / host-side configuration overrides
+exome.config
+exome_docker.config
+
+# Large reference genome assets, indexes, and annotation sets
+resources/reference/*.fa
+resources/reference/*.fasta
+resources/reference/*.fai
+resources/reference/*.dict
+resources/reference/*.bwt
+resources/reference/*.sa
+resources/reference/*.pac
+resources/reference/*.ann
+resources/reference/*.amb
+resources/reference/*.0123
+resources/known_sites/*.vcf
+resources/known_sites/*.vcf.gz
+resources/known_sites/*.vcf.gz.tbi
+resources/known_sites/*.idx
+resources/intervals/*.bed
+
+# Intermediate alignments, BAMs, metrics, and raw VCFs
+*.sam
+*.bam
+*.bai
+*.vcf
+*.vcf.gz
+*.vcf.gz.tbi
+*.tar.gz
+
+# System, OS, and editor artifacts
+.DS_Store
+Thumbs.db
+.idea/
+.vscode/
+*.swp
+*~

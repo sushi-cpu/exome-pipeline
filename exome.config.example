@@ -1,0 +1,82 @@
+# ==============================================================================
+# exome.config.example
+# Systems Design Configuration Template for Whole Exome Sequencing (WES) Pipeline
+# ==============================================================================
+# IMPORTANT: The runner script does not perform internal variable assignments.
+# All paths, resource budgets, and tool parameters are governed by this file.
+# Copy this file to exome.config and adjust paths for your local machine or container.
+# ==============================================================================
+
+# ------------------------------------------------------------------------------
+# 1. Project Inputs and Outputs
+# ------------------------------------------------------------------------------
+# Path to sample sheet CSV (columns: sample,patient,fastq_1,fastq_2)
+SAMPLESHEET="samplesheets/test.csv"
+
+# Destination directories for outputs and runtime logs
+RESULTS_DIR="results"
+LOGS_DIR="logs"
+MODULES_DIR="modules"
+
+# Organization layout for analysis results:
+# "sample" -> One directory per sample: results/<sample_id>/<stage>/...
+# "stage"  -> One directory per pipeline stage: results/<stage>/<sample_id>.*
+LAYOUT="sample"
+
+# ------------------------------------------------------------------------------
+# 2. Reference Resources & Annotations (Must share identical genome build!)
+# ------------------------------------------------------------------------------
+# Reference genome FASTA (.fai and .dict must be present in the same directory)
+REFERENCE="resources/reference/GRCh38.fa"
+
+# Known-sites VCF for Base Quality Score Recalibration (must be bgzipped + tabix indexed)
+KNOWN_SITES="resources/known_sites/known_sites.vcf.gz"
+
+# Exome target capture intervals (BED format)
+TARGET_BED="resources/intervals/exome_targets.bed"
+
+# ------------------------------------------------------------------------------
+# 3. Resource Allocations & Thread Management (Follow 15% Idle Headroom Rule)
+# ------------------------------------------------------------------------------
+# Total threads permitted for heavy stages
+TOTAL_THREADS="8"
+FASTQC_THREADS="4"
+FASTP_THREADS="4"
+BWA_THREADS="8"
+SAMTOOLS_THREADS="4"
+
+# JVM heap allocation for GATK Picard / HaplotypeCaller / BQSR
+GATK_JAVA_OPTIONS="-Xmx16g -XX:ParallelGCThreads=4 -Djava.io.tmpdir=/tmp"
+
+# ------------------------------------------------------------------------------
+# 4. Tool Selection & Stage Specific Parameters
+# ------------------------------------------------------------------------------
+# Alignment binary: "bwa" or "bwa-mem2"
+BWA_BIN="bwa"
+
+# fastp quality and adapter trimming criteria
+FASTP_QUAL_PHRED="20"
+FASTP_MIN_LENGTH="36"
+
+# Picard/GATK MarkDuplicates settings
+PICARD_VALIDATION_STRINGENCY="LENIENT"
+REMOVE_DUPLICATES="false"
+
+# GATK HaplotypeCaller parameters (e.g. "-ERC GVCF" if producing gVCFs)
+GATK_HC_EXTRA_ARGS=""
+
+# GATK VariantFiltration Hard-Filtering Expressions
+GATK_FILTER_EXPRESSION="QD < 2.0 || FS > 60.0 || MQ < 40.0 || MQRankSum < -12.5 || ReadPosRankSum < -8.0 || SOR > 3.0"
+GATK_FILTER_NAME="StandardExomeFilter"
+
+# ------------------------------------------------------------------------------
+# 5. Workflow Control Flags
+# ------------------------------------------------------------------------------
+# Keep intermediate BAMs (e.g. unsorted SAM/BAM) for debugging (true/false)
+KEEP_INTERMEDIATE_BAM="false"
+
+# Generate aggregated cohort MultiQC report upon run completion (true/false)
+RUN_MULTIQC="true"
+
+# Dry run mode: print commands without running (true/false)
+DRY_RUN="false"

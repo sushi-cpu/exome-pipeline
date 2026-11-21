@@ -1,0 +1,17 @@
+.git/
+.github/
+data/
+test_data/
+samplesheets/
+resources/
+results/
+logs/
+exome_docker.sh
+exome_docker.config
+*.fastq.gz
+*.bam
+*.bai
+*.sam
+*.vcf.gz
+*.vcf.gz.tbi
+.DS_Store

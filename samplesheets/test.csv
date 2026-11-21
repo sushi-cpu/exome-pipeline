@@ -1,0 +1,2 @@
+sample,patient,fastq_1,fastq_2
+test_sample,test_patient,test_data/test_sample_R1.fastq.gz,test_data/test_sample_R2.fastq.gz
